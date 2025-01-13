@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const Sidebar = ({isOpen,setIsOpen}) => {
 
   return (
     <>
+      <div
+          className={`flex-1 transition-all duration-300 ${
+              isOpen ? 'ml-64' : 'ml-0'
+            }`}
+        >
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-gray-800 text-white"
+        className="fixed top-3 left-4 z-50 p-2 rounded-md bg-gray-800 text-white"
       >
         {isOpen ? (
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -21,7 +25,7 @@ const Sidebar = () => {
       </button>
 
       {/* Sidebar */}
-      <div className={`fixed  left-0 h-full w-64 bg-gray-800 text-white transform transition-transform duration-300 ease-in-out ${
+      <div className={`fixed left-0 h-full w-40 md:w-48 lg:w-64 bg-gray-800 text-white transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div className="p-6">
@@ -69,6 +73,7 @@ const Sidebar = () => {
             </ul>
           </nav>
         </div>
+      </div>
       </div>
     </>
   );

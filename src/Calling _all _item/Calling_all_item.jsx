@@ -11,17 +11,21 @@ import MainLayout from '../layouts/MainLayout';
 // import Contact from '../pages/Contact';
 
 const Calling_all_item = () => {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   return (
     <>
      <Router>
-        {/* Main Content */}
-        {/* <main className={`transition-all duration-300 ${
-          isSidebarOpen ? 'md:ml-64' : ''
-        } pt-16`}>
-          */}
+     <div className="flex h-screen">
+        <div
+          className={`flex-1 transition-all duration-300 ${
+              isSidebarOpen ? 'lg:ml-64 md:ml-48 ml-40' : 'ml-0'
+            }`}
+        >
+          {/* <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+          <Header toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} /> */}
+          <main className='h-full'>
             <Routes>
-             <Route path="/" element={<MainLayout />}>
+             <Route path="/" element={<MainLayout isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />
@@ -30,7 +34,9 @@ const Calling_all_item = () => {
               {/* <Route path="/contact" element={<Contact />} /> */}
               </Route>
             </Routes>
-        {/* </main> */}
+            </main>
+        </div>
+      </div>
     </Router>
     </>
   )
