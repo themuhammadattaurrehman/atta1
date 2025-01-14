@@ -6,6 +6,7 @@ import Profile from '../pages/Profile';
 import Settings from '../pages/Settings';
 import { useState } from 'react';
 import MainLayout from '../layouts/MainLayout';
+import Home from '../pages/Home';
 // import About from '../pages/About';
 // import Services from '../pages/Services';
 // import Contact from '../pages/Contact';
@@ -26,6 +27,7 @@ const Calling_all_item = () => {
           <main className='h-full'>
             <Routes>
              <Route path="/" element={<MainLayout isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />}>
+              <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<Settings />} />
