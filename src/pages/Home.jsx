@@ -1,101 +1,149 @@
-import React from 'react'
-
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Make sure to import axios
+import Actions from "./Actions";
+import Status from "./Status";
+import { useNavigate } from 'react-router-dom';
 const Home = () => {
+  const [users, setUsers] = useState([]);
+  // const [error, setError] = useState(""); // Added error state
+  const [logs, setLogs] = useState([]);
+  const [pageViews, setPageViews] = useState([]);
+  const history = useNavigate();
+  const [activeUserCount, setActiveUserCount] = useState(0);
+  const [activeUserwCount, setActiveUserwCount] = useState(0);
+  const [error, setError] = useState(null);
+  const [period, setPeriod] = useState('daily');
+  const [periodw, setPeriodw] = useState('daily');
+  useEffect(() => {
+
+    
+      const token = localStorage.getItem('token'); // Check for the token
+  
+      if (!token) {
+        // If token is not present, redirect to the login page
+        history('/'); // Adjust the path based on your routing setup
+      }
+      fetchweeklyUsers();
+      fetchActiveUsers();
+      fetchPageViews();
+    fetchUsers();
+    getActivityLogs();
+  }, [history]);
+  const fetchPageViews = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/Admin/analytics/page-views');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data)
+      setPageViews(data.pageViews[0].views);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/Admin/users'); // Ensure this endpoint is correct
+      console.log(response.data); // Log the response data
+      setUsers(response.data);
+    } catch (err) {
+      console.error("Error fetching users:", err); // Log the error for debugging
+      setError(err.response?.data?.message || 'Failed to fetch users');
+    }
+  };
+
+  const fetchActiveUsers = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/Admin/analytics/active-users?period=${period}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      console.log(data)
+      setActiveUserCount(data.activeUsers);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const fetchweeklyUsers = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/Admin/analytics/active-users?period=${periodw}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setActiveUserwCount(data.activeUsers);
+    } catch (error) {
+      setError(error.message);
+    }
+  }; 
+
+  const getActivityLogs = async () => {
+    try {
+      // Construct the query parameters
+      // const queryParams = new URLSearchParams();
+      // if (userId) queryParams.append('userId', userId);
+      // if (action) queryParams.append('action', action);
+      // if (timestamp) queryParams.append('timestamp', timestamp);
+  
+      // Make the GET request to the API
+      const response = await fetch(`http://localhost:5000/Admin/activity`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to fetch activity logs');
+      }
+  
+      const logs = await response.json();
+      console.log(logs); // Log the fetched activity logs
+      setLogs(logs);
+    } catch (error) {
+      console.error('Error fetching activity logs:', error);
+    }
+  };
+  
+
+  
   return (
-    //    <div className="bg-white rounded-lg shadow-md p-6">
-    //   <h2 className="text-2xl font-bold mb-4">Settings</h2>
-    //   <p>Manage your application settings here.</p>
- <section class="section dashboard">
-  <div class="flex flex-wrap">
-    <div class="w-full lg:w-8/12">
-      <div class="flex flex-wrap">
-        <div class="w-full sm:w-1/2 lg:w-1/3 ">
-          <div class="bg-white shadow-md rounded-lg p-4">
-            <div class="relative">
-              <button class="absolute top-0 right-0 p-2" aria-haspopup="true">
-                <i class="bi bi-three-dots"></i>
-              </button>
-              <ul class="absolute right-0 hidden bg-white shadow-lg rounded-md mt-2">
-                <li class="text-left p-2 border-b"><h6>Filter</h6></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">Today</a></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">This Month</a></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">This Year</a></li>
-              </ul>
-            </div>
-            <div class="mt-4">
-              <h5 class="text-lg font-semibold">Sales <span class="text-gray-500">| Today Sales</span></h5>
-              <div class="flex items-center mt-2">
-                <div class="bg-blue-500 text-white rounded-full p-3 flex items-center justify-center">
-                  <i class="bi bi-cart"></i>
-                </div>
-                <div class="ml-3">
-                  <h6 class="text-2xl">145</h6>
-                  <span class="text-green-500 font-bold">12%</span> <span class="text-gray-500">increase</span>
-                </div>
-              </div>
-            </div>
+    <div className="h-full bg-gray-100">
+      <div className="flex gap-4 bg-gray-100 mb-4">
+        <div className="flex-1 max-w-xs bg-white shadow-lg rounded-lg overflow-hidden p-4">
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-blue-600">Daily Active User</h2>
+            <p className="text-gray-600">{activeUserCount}</p>
+            <p className="text-sm text-gray-500">Views today</p>
           </div>
         </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3">
-          <div class="bg-white shadow-md rounded-lg p-4">
-            <div class="relative">
-              <button class="absolute top-0 right-0 p-2" aria-haspopup="true">
-                <i class="bi bi-three-dots"></i>
-              </button>
-              <ul class="absolute right-0 hidden bg-white shadow-lg rounded-md mt-2">
-                <li class="text-left p-2 border-b"><h6>Filter</h6></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">Today</a></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">This Month</a></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">This Year</a></li>
-              </ul>
-            </div>
-            <div class="mt-4">
-              <h5 class="text-lg font-semibold">Revenue <span class="text-gray-500">| This Month</span></h5>
-              <div class="flex items-center mt-2">
-                <div class="bg-green-500 text-white rounded-full p-3 flex items-center justify-center">
-                  <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="ml-3">
-                  <h6 class="text-2xl">$3,264</h6>
-                  <span class="text-green-500 font-bold">8%</span> <span class="text-gray-500">increase</span>
-                </div>
-              </div>
-            </div>
+
+        <div className="flex-1 max-w-xs bg-white shadow-lg rounded-lg overflow-hidden p-4">
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-green-600">Weekly Active User</h2>
+            <p className="text-gray-600">{activeUserwCount}</p>
+            <p className="text-sm text-gray-500">Views this week</p>
           </div>
         </div>
-        <div class="w-full sm:w-1/2 lg:w-1/3">
-          <div class="bg-white shadow-md rounded-lg p-4">
-            <div class="relative">
-              <button class="absolute top-0 right-0 p-2" aria-haspopup="true">
-                <i class="bi bi-three-dots"></i>
-              </button>
-              <ul class="absolute right-0 hidden bg-white shadow-lg rounded-md mt-2">
-                <li class="text-left p-2 border-b"><h6>Filter</h6></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">Today</a></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">This Month</a></li>
-                <li><a class="block p-2 hover:bg-gray-100" href="#">This Year</a></li>
-              </ul>
-            </div>
-            <div class="mt-4">
-              <h5 class="text-lg font-semibold">Customers <span class="text-gray-500">| This Year</span></h5>
-              <div class="flex items-center mt-2">
-                <div class="bg-red-500 text-white rounded-full p-3 flex items-center justify-center">
-                  <i class="bi bi-people"></i>
-                </div>
-                <div class="ml-3">
-                  <h6 class="text-2xl">1244</h6>
-                  <span class="text-red-500 font-bold">12%</span> <span class="text-gray-500">decrease</span>
-                </div>
-              </div>
-            </div>
+
+        <div className="flex-1 max-w-xs bg-white shadow-lg rounded-lg overflow-hidden p-4">
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-purple-600">Total Page Views</h2>
+            <p className="text-gray-600">{pageViews}</p>
+            <p className="text-sm text-gray-500">Total views</p>
           </div>
         </div>
       </div>
+      {error && <p className="text-red-500">{error}</p>} {/* Display error message if any */}
+      <Status users={users} fetchusers={fetchUsers} />
+      <Actions logs={logs} get={getActivityLogs}/>
     </div>
-  </div>
-</section>
-    // </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
