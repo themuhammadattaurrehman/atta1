@@ -90,11 +90,11 @@ const Actions = ({ logs }) => {
             <th className="py-3 px-6 text-left">Name</th>
             <th className="py-3 px-6 text-left">Date</th>
             <th className="py-3 px-6 text-left">Action</th>
-            <th className="py-3 px-6 text-center">details</th>
+            <th className="py-3 px-6 text-center">Details</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {currentItems && currentItems.length > 0
+          {currentItems.length > 0
             ? currentItems.map((item, index) => {
                 const date = new Date(item.timestamp);
                 const year = date.getFullYear();
@@ -110,38 +110,14 @@ const Actions = ({ logs }) => {
                     <td className="py-3 px-6 text-left">{index + 1}</td>
                     <td className="py-3 px-6 text-left">{item.userName}</td>
                     <td className="py-3 px-6 text-left">
-                      {item.timestamp}
+                      {customFormattedDate}
                     </td>
                     <td className="py-3 px-6 text-left">{item.action}</td>
                     <td className="py-3 px-6 text-center">{item.details}</td>
                   </tr>
                 );
               })
-            : activities.map((item, index) => {
-                const date = new Date(item.timestamp);
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, "0");
-                const day = String(date.getDate()).padStart(2, "0");
-                const customFormattedDate = `${month}/${day}/${year}`;
-
-                return (
-                  <tr
-                    key={item._id}
-                    className="border-b border-gray-200 hover:bg-gray-100"
-                  >
-                    <td className="py-3 px-6 text-left">{index + 1}</td>
-                    <td className="py-3 px-6 text-left">{item.userName}</td>
-                    <td className="py-3 px-6 text-left">
-                      {item.timestamp}
-                    </td>
-                    <td className="py-3 px-6 text-left">{item.action}</td>
-                    <td className="py-3 px-6 text-center">
-                      {item.details}
-                     
-                    </td>
-                  </tr>
-                );
-              })}
+            : <tr><td colSpan="5" className="text-center py-3">No activities found</td></tr>}
         </tbody>
       </table>
 
